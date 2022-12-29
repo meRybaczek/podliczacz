@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.26'
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'org.apache.poi:poi:5.2.2'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': "pdf3"
+    }
+    archiveBaseName = "${rootProject.name}"
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+
+
+}
