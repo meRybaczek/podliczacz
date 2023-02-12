@@ -22,13 +22,12 @@ public class PdfFileListCreator {
             try (
                     PDDocument pdf = PDDocument.load(file);
             ) {
-
+                String name = file.getName();
                 for (int i = 0; i < pdf.getNumberOfPages(); i++) {
                     PDPage page = pdf.getPage(i);
 
                     double width = ((page.getMediaBox().getWidth()) * CONVERT_TO_MM_FACTOR);
                     double height = ((page.getMediaBox().getHeight()) * CONVERT_TO_MM_FACTOR);
-                    String name = file.getName();
 
                     PdfFile pdfFile = new PdfFile(name, width, height);
                     pdfFileList.add(pdfFile);

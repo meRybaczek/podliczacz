@@ -38,6 +38,7 @@ public class PdfApp {
         createPdfList();
         createStatistic();
         printPdfFileList();
+        printPdfListShort();
         printQuantitySummary();
         setUnitData();
         calculate();
@@ -63,7 +64,16 @@ public class PdfApp {
         System.out.println("Lista rysunków: ");
         pdfFileList.stream()
                 .filter(x -> !x.isA4format())
-                .forEach(System.out::println);
+                .forEach(PdfFile::printDetailInfo);
+
+        System.out.println("Ilość A4 :" + a4Quantity +"\n");
+    }
+
+    private void printPdfListShort() {
+        System.out.println(">>> Zaznacz i skopiuj do Excela <<<");
+        pdfFileList.stream()
+                .filter(x -> !x.isA4format())
+                .forEach(PdfFile::printInfo);
 
         System.out.println("Ilość A4 :" + a4Quantity +"\n");
     }
@@ -77,20 +87,21 @@ public class PdfApp {
     }
 
     private void setUnitData() {
+        System.out.println("Podaj liczbę kopii: ");
+        this.copiesQuantity = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Wprowadź cenę jednostkową A4: ");
         this.a4UnitPrice = scanner.nextDouble();
         scanner.nextLine();
         System.out.println("Wprowadź cenę za m2 rysunku: ");
         this.drawingUnitPrice = scanner.nextDouble();
         scanner.nextLine();
-        System.out.println("Podaj liczbę kopii: ");
-        this.copiesQuantity = scanner.nextInt();
     }
 
-    private void calculate() {
+    private void calculate() {//buider
         PdfFilePriceCalculator pdfCalculator = new PdfFilePriceCalculator(a4UnitPrice, drawingUnitPrice, copiesQuantity, a4Quantity, drawingsAreaSqm);
-        this.totalDrawingPrice = pdfCalculator.countTotalDrawingsPrice();
-        this.totalA4Price = pdfCalculator.countTotalA4Price();
+        this.totalDrawingPrice = pdfCalculator.calculateTotalDrawingsPrice();
+        this.totalA4Price = pdfCalculator.calculateTotalA4Price();
     }
 
     private void printTotalPrice() {
@@ -98,6 +109,7 @@ public class PdfApp {
                 "Podsumowanie dla "+ copiesQuantity + " kopii: \n" +
                 "Sumaryczna ilość A4 [szt]: " + (a4Quantity * copiesQuantity) + "\n" +
                 "Sumaryczna powierzchnia rysunków [m2]: " + Precision.round((drawingsAreaSqm * copiesQuantity), 2) + "\n\n" +
-                "Cena całościowa [zł]: " + (totalA4Price + totalDrawingPrice));
+                "Cena całościowa [zł]: " + (totalA4Price + totalDrawingPrice) +
+                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     }
 }

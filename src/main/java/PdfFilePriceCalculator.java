@@ -17,11 +17,11 @@ public class PdfFilePriceCalculator {
         this.drawingsAreaSqm = drawingsAreaSqm;
     }
 
-    public double countTotalA4Price() {
+    public double calculateTotalA4Price() {
         return Precision.round((a4Quantity * a4UnitPrice * copiesQty), 2);
     }
 
-    public double countTotalDrawingsPrice() {
+    public double calculateTotalDrawingsPrice() {
         return Precision.round((drawingsAreaSqm * drawingUnitPrice * copiesQty), 2);
     }
 

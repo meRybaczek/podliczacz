@@ -9,10 +9,15 @@ public class PdfFile {
         this.height = height;
     }
 
-    @Override
-    public String toString() {
-        return Math.round(width) + " x " + Math.round(height) + " -----> " + name;
+
+    public void printInfo() {
+        System.out.printf("%.0f\t%.0f%n",height,width);
     }
+
+    public void printDetailInfo() {
+        System.out.printf("%.0f x %.0f [mm] --------> %s%n",height,width,name);
+    }
+
 
     public double areaSqm() {
         return width/1000 * height/1000;
