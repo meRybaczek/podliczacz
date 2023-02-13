@@ -98,8 +98,14 @@ public class PdfApp {
         scanner.nextLine();
     }
 
-    private void calculate() {//buider
-        PdfFilePriceCalculator pdfCalculator = new PdfFilePriceCalculator(a4UnitPrice, drawingUnitPrice, copiesQuantity, a4Quantity, drawingsAreaSqm);
+    private void calculate() {
+        PdfFilePriceCalculator pdfCalculator = new PdfFilePriceCalculator.Builder()
+                .a4UnitPrice(a4UnitPrice)
+                .drawingUnitPrice(drawingUnitPrice)
+                .copiesQty(copiesQuantity)
+                .a4Quantity(a4Quantity)
+                .drawingsAreaSqm(drawingsAreaSqm)
+                .build();
         this.totalDrawingPrice = pdfCalculator.calculateTotalDrawingsPrice();
         this.totalA4Price = pdfCalculator.calculateTotalA4Price();
     }
