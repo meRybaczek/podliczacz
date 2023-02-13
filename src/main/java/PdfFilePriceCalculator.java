@@ -9,7 +9,7 @@ public class PdfFilePriceCalculator {
     private double drawingsAreaSqm;
 
 
-    public PdfFilePriceCalculator(double a4UnitPrice, double drawingUnitPrice, int copiesQty, long a4Quantity, double drawingsAreaSqm) {
+    private PdfFilePriceCalculator(double a4UnitPrice, double drawingUnitPrice, int copiesQty, long a4Quantity, double drawingsAreaSqm) {
         this.a4UnitPrice = a4UnitPrice;
         this.drawingUnitPrice = drawingUnitPrice;
         this.copiesQty = copiesQty;
