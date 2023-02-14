@@ -1,5 +1,3 @@
-package version2;
-
 public class A4BlackPdfFile implements PdfFile{
 
     private static final double A4_AREA_SQM = 0.298 * 0.211;

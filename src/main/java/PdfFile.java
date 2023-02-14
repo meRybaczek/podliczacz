@@ -1,5 +1,3 @@
-package version2;
-
 public interface PdfFile {
 
     double countAreaSqm();

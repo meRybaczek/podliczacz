@@ -1,5 +1,3 @@
-package version2;
-
 public class A4ColorPdfFile implements PdfFile{
 
     PdfFileOption option = PdfFileOption.A4_COLOR;

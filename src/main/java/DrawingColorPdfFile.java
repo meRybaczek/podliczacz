@@ -1,5 +1,3 @@
-package version2;
-
 public class DrawingColorPdfFile implements PdfFile {
 
     PdfFileOption option = PdfFileOption.DRAWING_COLOR;

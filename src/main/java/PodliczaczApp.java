@@ -1,5 +1,3 @@
-package version2;
-
 import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
