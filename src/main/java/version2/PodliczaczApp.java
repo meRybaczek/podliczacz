@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TestApp {
+public class PodliczaczApp {
+    private static final String APP_VERSION = "v_04";
     Scanner scanner = new Scanner(System.in);
     private String filepath = "D:\\pliki testowe pdf";
     private int copiesQuantity;
@@ -16,31 +17,59 @@ public class TestApp {
     private PdfFileCalculator pdfFileCalculator;
 
     public static void main(String[] args) {
-        TestApp testApp = new TestApp();
-        testApp.mainLoop();
-
+        PodliczaczApp testApp = new PodliczaczApp();
+        System.out.println("\nWitaj w Podliczacz " + APP_VERSION + "\n");
+        testApp.start();
     }
 
-    private void mainLoop() {
-   //     getFilepath();
+    private void start() {
+        //getFilepath();
         createPdfFileList();
         printListByOption(PdfFileOption.DRAWING_BLACK);
         printQuantitySummary();
-        getUnitData();
-        setUnitDataForOption(PdfFileOption.DRAWING_BLACK, drawingUnitPrice);
-        setUnitDataForOption(PdfFileOption.A4_BLACK, a4UnitPrice);
-        printTotalPriceSummary();
+        mainLoop();
         scanner.close();
-
     }
 
     private void getFilepath() {
         System.out.println("Podaj ścieżkę katalogu z plikami pdf: ");
         this.filepath = scanner.nextLine();
     }
+
     private void createPdfFileList() {
         PdfFileFactory pdfFileFactory = new PdfFileFactory(filepath);
         list = pdfFileFactory.createList();
+    }
+
+    private void printListByOption(PdfFileOption option) {
+        System.out.printf("Lista dla %s:\n", option.name());
+
+        list.stream()
+                .filter(x -> x.getOption() == option)
+                .forEach(PdfFile::printInfo);
+    }
+
+    private void mainLoop() {
+        System.out.println("1 ---> zacznij ponownie\n2 ---> przygotuj listę rysunków do skopiowania\n3 ---> podlicz\n0 ---> EXIT");
+        switch (scanner.nextInt()) {
+            case 1 -> start();
+            case 2 -> {
+                printListToCopy();
+                mainLoop();
+            }
+            case 3 -> {
+                getUnitData();
+                setUnitDataForOption(PdfFileOption.DRAWING_BLACK, drawingUnitPrice);
+                setUnitDataForOption(PdfFileOption.A4_BLACK, a4UnitPrice);
+                printTotalPriceSummary();
+                mainLoop();
+            }
+            case 0 -> exit();
+            default -> {
+                System.err.println("Błędny wybór");
+                mainLoop();
+            }
+        }
     }
 
     private void getUnitData() {
@@ -54,18 +83,11 @@ public class TestApp {
         this.drawingUnitPrice = scanner.nextDouble();
         scanner.nextLine();
     }
+
     private void setUnitDataForOption(PdfFileOption option, double unitPrice) {
         list.stream()
-                .filter(x->x.getOption() == option)
-                .forEach(x-> x.setUnitPrice(unitPrice));
-    }
-
-    private void printListByOption(PdfFileOption option) {
-        System.out.printf("Lista dla %s\n", option.name());
-
-        list.stream()
-                .filter(x->x.getOption() == option)
-                .forEach(PdfFile::printInfo);
+                .filter(x -> x.getOption() == option)
+                .forEach(x -> x.setUnitPrice(unitPrice));
     }
 
     private void printQuantitySummary() {
@@ -79,18 +101,35 @@ public class TestApp {
                 "Powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea), 2) +
                 "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     }
+
     private void printTotalPriceSummary() {
-        pdfFileCalculator.setList(list);        // new list has to updated due to unitPrices update
+        pdfFileCalculator.setList(list);        // new list has to be updated due to unitPrices update
         long a4Quantity = pdfFileCalculator.getQuantityByOption(PdfFileOption.A4_BLACK);
         Double totalDrawingsArea = pdfFileCalculator.getAllDrawingsArea();
         Double totalPrice = pdfFileCalculator.getTotalPrice();
 
         System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" +
-                "Podsumowanie dla "+ copiesQuantity + " kopii: \n" +
+                "Podsumowanie dla " + copiesQuantity + " kopii: \n" +
                 "Sumaryczna ilość A4 [szt]: " + (a4Quantity * copiesQuantity) + "\n" +
                 "Sumaryczna powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea * copiesQuantity), 2) + "\n\n" +
-                "Cena całościowa [zł]: " + Precision.round((totalPrice * copiesQuantity),2) +
+                "Cena całościowa [zł]: " + Precision.round((totalPrice * copiesQuantity), 2) +
                 "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    }
+
+    private void printListToCopy() {
+        list.stream()
+                .filter(x -> x.getOption() == PdfFileOption.DRAWING_BLACK || x.getOption() == PdfFileOption.DRAWING_COLOR)
+                .forEach(PdfFile::printCopyToExcelInfo);
+    }
+
+    private void exit() {
+        System.out.println("""
+                  _                                                                                           \s
+                 |_)  _  |_        |_|     ._ _  ._ _       _       \\    / |  _   _ _   _ _     _  ._   _.   |\s
+                 |_) (_) |_)   o   | | |_| | | | | | | |_| _>   o    \\/\\/  | (_) _> /_ (_ /_ \\/ /_ | | (_|   o\s
+                               /                                /                            /                \s
+                """);
+        System.exit(0);
     }
 
 }

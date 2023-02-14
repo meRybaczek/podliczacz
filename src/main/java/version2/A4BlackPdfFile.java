@@ -1,10 +1,11 @@
 package version2;
 
-public class a4ColorPdfFile implements PdfFile{
+public class A4BlackPdfFile implements PdfFile{
 
-    PdfFileOption option = PdfFileOption.A4_COLOR;
+    private static final double A4_AREA_SQM = 0.298 * 0.211;
+
+    PdfFileOption option = PdfFileOption.A4_BLACK;
     private boolean isA4 = true;
-    private static final double A4_AREA_SQM = 0.297 * 0.210;
     private String name;
 
     private double width;
@@ -13,15 +14,17 @@ public class a4ColorPdfFile implements PdfFile{
 
     private double unitPrice;
 
-    public a4ColorPdfFile(String name, double width, double height) {
+    public A4BlackPdfFile(String name, double width, double height) {
         this.name = name;
         this.width = width;
         this.height = height;
     }
+
     @Override
     public PdfFileOption getOption() {
         return option;
     }
+
     @Override
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;

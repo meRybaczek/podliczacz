@@ -48,11 +48,11 @@ public class PdfFileFactory {
         boolean isA4 = isA4Format(width, height);
 
         if(isA4 && !isColor)
-            return new a4BlackPdfFile(name, width, height);
+            return new A4BlackPdfFile(name, width, height);
         else if(isA4)
-            return new a4ColorPdfFile(name, width, height);
+            return new A4ColorPdfFile(name, width, height);
 
-        return isColor ? new drawingColorPdfFile(name, width, height) : new drawingBlackPdfFile(name, width, height);
+        return isColor ? new DrawingColorPdfFile(name, width, height) : new DrawingBlackPdfFile(name, width, height);
     }
 
     private boolean isA4Format(double width, double height) {

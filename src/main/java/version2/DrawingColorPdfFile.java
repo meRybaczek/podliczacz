@@ -1,11 +1,9 @@
 package version2;
 
-public class a4BlackPdfFile implements PdfFile{
+public class DrawingColorPdfFile implements PdfFile {
 
-    private static final double A4_AREA_SQM = 0.297 * 0.210;
+    PdfFileOption option = PdfFileOption.DRAWING_COLOR;
 
-    PdfFileOption option = PdfFileOption.A4_BLACK;
-    private boolean isA4 = true;
     private String name;
 
     private double width;
@@ -14,7 +12,8 @@ public class a4BlackPdfFile implements PdfFile{
 
     private double unitPrice;
 
-    public a4BlackPdfFile(String name, double width, double height) {
+
+    public DrawingColorPdfFile(String name, double width, double height) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -32,17 +31,20 @@ public class a4BlackPdfFile implements PdfFile{
 
     @Override
     public double countAreaSqm() {
-        return A4_AREA_SQM;
+        return (width / 1000) * (height / 1000);
     }
 
     @Override
     public double countPrice() {
-        return unitPrice;
+        return countAreaSqm() * unitPrice;
     }
 
     @Override
     public void printInfo() {
-        System.out.printf("A4 black:  -----> %s\n", name);
-
+        System.out.printf("%.0f x %.0f --- %s -----> %s\n", width, height, option.name(), name);
+    }
+    @Override
+    public void printCopyToExcelInfo() {
+        System.out.printf("%.0f\t%.0f\n", width, height);
     }
 }
