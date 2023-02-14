@@ -14,13 +14,13 @@ public class PodliczaczApp {
     private List<PdfFile> list = new ArrayList<>();
     private PdfFileCalculator pdfFileCalculator;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         PodliczaczApp testApp = new PodliczaczApp();
         System.out.println("\nWitaj w Podliczacz " + APP_VERSION + "\n");
         testApp.start();
     }
 
-    private void start() {
+    private void start() throws InterruptedException {
         //getFilepath();
         createPdfFileList();
         printListByOption(PdfFileOption.DRAWING_BLACK);
@@ -47,8 +47,14 @@ public class PodliczaczApp {
                 .forEach(PdfFile::printInfo);
     }
 
-    private void mainLoop() {
-        System.out.println("1 ---> zacznij ponownie\n2 ---> przygotuj listę rysunków do skopiowania\n3 ---> podlicz\n0 ---> EXIT");
+    private void mainLoop() throws InterruptedException {
+        System.out.println("""
+
+                1 ---> zacznij ponownie
+                2 ---> przygotuj listę rysunków do skopiowania
+                3 ---> podlicz
+                4 ---> nie klikać tego
+                0 ---> EXIT""");
         switch (scanner.nextInt()) {
             case 1 -> start();
             case 2 -> {
@@ -60,6 +66,10 @@ public class PodliczaczApp {
                 setUnitDataForOption(PdfFileOption.DRAWING_BLACK, drawingUnitPrice);
                 setUnitDataForOption(PdfFileOption.A4_BLACK, a4UnitPrice);
                 printTotalPriceSummary();
+                mainLoop();
+            }
+            case 4 -> {
+                usuwanieWspolny();
                 mainLoop();
             }
             case 0 -> exit();
@@ -97,7 +107,7 @@ public class PodliczaczApp {
                 "Podsumowanie dla katalogu: " + filepath + "\n" +
                 "Ilość A4 [szt]: " + a4Quantity + "\n" +
                 "Powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea), 2) +
-                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
     private void printTotalPriceSummary() {
@@ -111,7 +121,7 @@ public class PodliczaczApp {
                 "Sumaryczna ilość A4 [szt]: " + (a4Quantity * copiesQuantity) + "\n" +
                 "Sumaryczna powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea * copiesQuantity), 2) + "\n\n" +
                 "Cena całościowa [zł]: " + Precision.round((totalPrice * copiesQuantity), 2) +
-                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
     private void printListToCopy() {
@@ -128,6 +138,15 @@ public class PodliczaczApp {
                                /                                /                            /                \s
                 """);
         System.exit(0);
+    }
+
+    private void usuwanieWspolny() throws InterruptedException {
+
+        for (int i = 0; i <= 100; i++) {
+            System.out.print("Usuwanie plików //Nowy_Wspolny " + i+"%\r");
+            Thread.sleep(1000);
+        }
+        System.out.println("//Nowy_Wspolny usuniety.");
     }
 
 }
