@@ -5,6 +5,7 @@ public interface PdfFile {
     void printInfo();
     PdfFileOption getOption();
     void setUnitPrice(double unitPrice);
-    default void printCopyToExcelInfo(){};
+    double getWidth();
+    double getHeight();
 
 }

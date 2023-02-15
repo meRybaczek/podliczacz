@@ -16,6 +16,17 @@ public class DrawingBlackPdfFile implements PdfFile{
         this.width = width;
         this.height = height;
     }
+
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
     @Override
     public PdfFileOption getOption() {
         return option;
@@ -39,8 +50,5 @@ public class DrawingBlackPdfFile implements PdfFile{
     public void printInfo() {
         System.out.printf("%.0f x %.0f --- %s -----> %s\n", width, height, option.name(), name);
     }
-    @Override
-    public void printCopyToExcelInfo() {
-        System.out.printf("%.0f\t%.0f\n", width, height);
-    }
+
 }

@@ -19,6 +19,16 @@ public class A4BlackPdfFile implements PdfFile{
     }
 
     @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
+    @Override
     public PdfFileOption getOption() {
         return option;
     }

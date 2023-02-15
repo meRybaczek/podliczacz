@@ -1,3 +1,4 @@
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
@@ -7,21 +8,19 @@ import java.util.Scanner;
 public class PodliczaczApp {
     private static final String APP_VERSION = "v_04";
     Scanner scanner = new Scanner(System.in);
-    private String filepath = "D:\\pliki testowe pdf";
-    private int copiesQuantity;
-    private double a4UnitPrice;
-    private double drawingUnitPrice;
+    private String filepath;
     private List<PdfFile> list = new ArrayList<>();
     private PdfFileCalculator pdfFileCalculator;
+    private SummaryStrategy summaryStrategy;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args)  {
         PodliczaczApp testApp = new PodliczaczApp();
         System.out.println("\nWitaj w Podliczacz " + APP_VERSION + "\n");
         testApp.start();
     }
 
-    private void start() throws InterruptedException {
-        //getFilepath();
+    private void start() {
+        getFilepath();
         createPdfFileList();
         printListByOption(PdfFileOption.DRAWING_BLACK);
         printQuantitySummary();
@@ -30,7 +29,7 @@ public class PodliczaczApp {
     }
 
     private void getFilepath() {
-        System.out.println("Podaj ścieżkę katalogu z plikami pdf: ");
+        System.out.println("Podaj sciezke katalogu z plikami pdf: ");
         this.filepath = scanner.nextLine();
     }
 
@@ -39,7 +38,7 @@ public class PodliczaczApp {
         list = pdfFileFactory.createList();
     }
 
-    private void printListByOption(PdfFileOption option) {
+    private void printListByOption(PdfFileOption option) {      //plan to implement options to chose
         System.out.printf("Lista dla %s:\n", option.name());
 
         list.stream()
@@ -47,25 +46,19 @@ public class PodliczaczApp {
                 .forEach(PdfFile::printInfo);
     }
 
-    private void mainLoop() throws InterruptedException {
+    private void mainLoop()  {
         System.out.println("""
 
                 1 ---> zacznij ponownie
-                2 ---> przygotuj listę rysunków do skopiowania
-                3 ---> podlicz
-                4 ---> nie klikać tego
+                2 ---> skopiuj do excela
+                3 ---> podlicz tutaj
+                4 ---> nie radze
                 0 ---> EXIT""");
-        switch (scanner.nextInt()) {
+        int option = scanner.nextInt();
+        switch (option) {
             case 1 -> start();
-            case 2 -> {
-                printListToCopy();
-                mainLoop();
-            }
-            case 3 -> {
-                getUnitData();
-                setUnitDataForOption(PdfFileOption.DRAWING_BLACK, drawingUnitPrice);
-                setUnitDataForOption(PdfFileOption.A4_BLACK, a4UnitPrice);
-                printTotalPriceSummary();
+            case 2, 3 -> {
+                createSummary(option);
                 mainLoop();
             }
             case 4 -> {
@@ -74,28 +67,20 @@ public class PodliczaczApp {
             }
             case 0 -> exit();
             default -> {
-                System.err.println("Błędny wybór");
+                System.err.println("Bledny wybor");
                 mainLoop();
             }
         }
     }
 
-    private void getUnitData() {
-        System.out.println("Podaj liczbę kopii: ");
-        this.copiesQuantity = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Wprowadź cenę jednostkową A4: ");
-        this.a4UnitPrice = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.println("Wprowadź cenę za m2 rysunku: ");
-        this.drawingUnitPrice = scanner.nextDouble();
-        scanner.nextLine();
-    }
+    private void createSummary(int option) {
+        if (option == 2)
+            summaryStrategy = new ExternalSummaryStrategy(filepath, list);
+        if (option == 3)
+            summaryStrategy = new InternalSummaryStrategy(list, pdfFileCalculator);
 
-    private void setUnitDataForOption(PdfFileOption option, double unitPrice) {
-        list.stream()
-                .filter(x -> x.getOption() == option)
-                .forEach(x -> x.setUnitPrice(unitPrice));
+        summaryStrategy.createSummary();
+
     }
 
     private void printQuantitySummary() {
@@ -105,32 +90,14 @@ public class PodliczaczApp {
 
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" +
                 "Podsumowanie dla katalogu: " + filepath + "\n" +
-                "Ilość A4 [szt]: " + a4Quantity + "\n" +
-                "Powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea), 2) +
+                "Ilosc A4 [szt]: " + a4Quantity + "\n" +
+                "Powierzchnia rysunkow [m2]: " + Precision.round((totalDrawingsArea), 2) +
                 "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
-    private void printTotalPriceSummary() {
-        pdfFileCalculator.setList(list);        // new list has to be updated due to unitPrices update
-        long a4Quantity = pdfFileCalculator.getQuantityByOption(PdfFileOption.A4_BLACK);
-        Double totalDrawingsArea = pdfFileCalculator.getAllDrawingsArea();
-        Double totalPrice = pdfFileCalculator.getTotalPrice();
-
-        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" +
-                "Podsumowanie dla " + copiesQuantity + " kopii: \n" +
-                "Sumaryczna ilość A4 [szt]: " + (a4Quantity * copiesQuantity) + "\n" +
-                "Sumaryczna powierzchnia rysunków [m2]: " + Precision.round((totalDrawingsArea * copiesQuantity), 2) + "\n\n" +
-                "Cena całościowa [zł]: " + Precision.round((totalPrice * copiesQuantity), 2) +
-                "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    }
-
-    private void printListToCopy() {
-        list.stream()
-                .filter(x -> x.getOption() == PdfFileOption.DRAWING_BLACK || x.getOption() == PdfFileOption.DRAWING_COLOR)
-                .forEach(PdfFile::printCopyToExcelInfo);
-    }
 
     private void exit() {
+        scanner.nextLine();
         System.out.println("""
                   _                                                                                           \s
                  |_)  _  |_        |_|     ._ _  ._ _       _       \\    / |  _   _ _   _ _     _  ._   _.   |\s
@@ -140,13 +107,19 @@ public class PodliczaczApp {
         System.exit(0);
     }
 
-    private void usuwanieWspolny() throws InterruptedException {
-
-        for (int i = 0; i <= 100; i++) {
-            System.out.print("Usuwanie plików //Nowy_Wspolny " + i+"%\r");
-            Thread.sleep(1000);
+    private void usuwanieWspolny() {
+        try {
+            for (int i = 0; i <= 100; i++) {
+                System.out.print("Usuwanie plikow //Nowy_Wspolny " + i + "%\r");
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e){
+            e.getStackTrace();
         }
-        System.out.println("//Nowy_Wspolny usuniety.");
+
+
+        System.out.println("folder //Nowy_Wspolny usuniety.");
     }
+
 
 }

@@ -16,6 +16,17 @@ public class A4ColorPdfFile implements PdfFile{
         this.width = width;
         this.height = height;
     }
+
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
     @Override
     public PdfFileOption getOption() {
         return option;

@@ -1,8 +1,7 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class PdfFileCalculator {
-    private List<PdfFile> list = new ArrayList<>();
+    private List<PdfFile> list;
 
     public PdfFileCalculator(List<PdfFile> list) {
         this.list = list;
