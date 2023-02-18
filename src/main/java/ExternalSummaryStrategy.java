@@ -4,10 +4,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,16 +33,16 @@ public class ExternalSummaryStrategy implements SummaryStrategy {
     private void getDataFromClient() {
         System.out.println("Podaj nazwe klienta:");
         this.clientName = scanner.nextLine();
-        System.out.println("Wprowadz rabat");
+        System.out.println("Wprowadz rabat[%]:");
         this.discount = scanner.nextDouble();
         scanner.nextLine();
         System.out.println("Podaj liczbe kopii: ");
         this.copiesQuantity = scanner.nextInt();
         scanner.nextLine();
-        System.out.println("Skladac rysunki (0 - nie, 1 - tak)");
+        System.out.println("Skladac rysunki (0 - NIE, 1 - TAK)");
         this.foldDrawing = scanner.nextInt();
         scanner.nextLine();
-        System.out.println("Wpisz rodzaj rysunku");
+        System.out.println("Podaj rodzaj rysunku:");
         printDrawingTypes();
         drawingType = scanner.nextInt();
     }
@@ -56,7 +53,10 @@ public class ExternalSummaryStrategy implements SummaryStrategy {
     }
 
     private void extractToExcelFile() {
-        File xlsxFile = new File("D:\\plikipdf\\drawings.xls");
+//        InputStream resourceAsStream = ExternalSummaryStrategy.class.getResourceAsStream("podliczanie.xls");
+//        resourceAsStream.
+
+        File xlsxFile = new File("./podliczanie.xls");
 
         List<PdfFile> onlyDrawings = getAllDrawings(list);
 
@@ -68,18 +68,22 @@ public class ExternalSummaryStrategy implements SummaryStrategy {
             int rowCount = 1;
 
             for (PdfFile pdfFile : onlyDrawings) {
-                Row row = sheet.createRow(rowCount++);
+                Row row = sheet.getRow(rowCount++);
 
-                row.createCell(1).setCellValue(Math.round(pdfFile.getHeight()));
-                row.createCell(2).setCellValue(Math.round(pdfFile.getWidth()));
-                row.createCell(3).setCellValue(drawingType);
-                row.createCell(4).setCellValue(foldDrawing);
-                row.createCell(5).setCellValue(copiesQuantity);
+                row.createCell(2).setCellValue(Math.round(pdfFile.getHeight()));
+                row.createCell(3).setCellValue(Math.round(pdfFile.getWidth()));
+                row.createCell(4).setCellValue(drawingType);
+                row.createCell(5).setCellValue(foldDrawing);
+                row.createCell(6).setCellValue(copiesQuantity);
 
             }
-            sheet.createRow(1).createCell(8).setCellValue(clientName);
-            sheet.createRow(2).createCell(8).setCellValue(discount);
-            sheet.createRow(3).createCell(8).setCellValue("A4 szt " + getA4Quantity());
+            sheet.getRow(2).createCell(9).setCellValue(clientName);
+            sheet.getRow(9).createCell(9).setCellValue(discount);
+            sheet.getRow(rowCount +1).createCell(1).setCellValue("A4");
+
+            long totalA4Qty = getA4Quantity() * copiesQuantity;
+            sheet.getRow(rowCount +1).createCell(6).setCellValue(totalA4Qty);
+
 
             inputStream.close();
             FileOutputStream os = new FileOutputStream(filepath+"\\summary.xls");
@@ -89,7 +93,8 @@ public class ExternalSummaryStrategy implements SummaryStrategy {
             workbook.close();
             os.close();
 
-            System.out.println("Excel z obliczeniem znajdziesz tu " + filepath);
+            System.out.println("Excel z obliczeniem znajdziesz tu " + filepath +"\n" +
+                    "*** UWAGA *** w pliku excel dodaj cene za A4");
 
         } catch (IOException e) {
             System.err.println("Exception while updating an existing excel file.");

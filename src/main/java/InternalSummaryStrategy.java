@@ -52,7 +52,7 @@ public class InternalSummaryStrategy implements SummaryStrategy{
                 "Podsumowanie dla " + copiesQuantity + " kopii: \n" +
                 "Sumaryczna ilosc A4 [szt]: " + (a4Quantity * copiesQuantity) + "\n" +
                 "Sumaryczna powierzchnia rysunkow [m2]: " + Precision.round((totalDrawingsArea * copiesQuantity), 2) + "\n\n" +
-                "Cena calosciowa [zł]: " + Precision.round((totalPrice * copiesQuantity), 2) +
+                "Cena calosciowa [zl]: " + Precision.round((totalPrice * copiesQuantity), 2) +
                 "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 }

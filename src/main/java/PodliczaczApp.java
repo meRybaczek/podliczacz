@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class PodliczaczApp {
     private static final String APP_VERSION = "v_04";
-    Scanner scanner = new Scanner(System.in);
+    Scanner scanner;
     private String filepath;
     private List<PdfFile> list = new ArrayList<>();
     private PdfFileCalculator pdfFileCalculator;
@@ -29,6 +29,7 @@ public class PodliczaczApp {
     }
 
     private void getFilepath() {
+        scanner = new Scanner(System.in);
         System.out.println("Podaj sciezke katalogu z plikami pdf: ");
         this.filepath = scanner.nextLine();
     }
@@ -52,16 +53,17 @@ public class PodliczaczApp {
                 1 ---> zacznij ponownie
                 2 ---> skopiuj do excela
                 3 ---> podlicz tutaj
-                4 ---> nie radze
+                4 ---> PROTAN
+                5 ---> nie radze
                 0 ---> EXIT""");
         int option = scanner.nextInt();
         switch (option) {
             case 1 -> start();
-            case 2, 3 -> {
+            case 2, 3, 4 -> {
                 createSummary(option);
                 mainLoop();
             }
-            case 4 -> {
+            case 5 -> {
                 usuwanieWspolny();
                 mainLoop();
             }
@@ -78,9 +80,10 @@ public class PodliczaczApp {
             summaryStrategy = new ExternalSummaryStrategy(filepath, list);
         if (option == 3)
             summaryStrategy = new InternalSummaryStrategy(list, pdfFileCalculator);
+        if (option == 4)
+            summaryStrategy = new ProtanStrategy(filepath, list);
 
         summaryStrategy.createSummary();
-
     }
 
     private void printQuantitySummary() {
@@ -88,7 +91,7 @@ public class PodliczaczApp {
         long a4Quantity = pdfFileCalculator.getQuantityByOption(PdfFileOption.A4_BLACK);
         Double totalDrawingsArea = pdfFileCalculator.getAllDrawingsArea();
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" +
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" +
                 "Podsumowanie dla katalogu: " + filepath + "\n" +
                 "Ilosc A4 [szt]: " + a4Quantity + "\n" +
                 "Powierzchnia rysunkow [m2]: " + Precision.round((totalDrawingsArea), 2) +
