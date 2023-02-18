@@ -34,20 +34,11 @@ public class DrawingColorPdfFile implements PdfFile {
         return option;
     }
 
-//    @Override
-//    public void setUnitPrice(double unitPrice) {
-//        this.unitPrice = unitPrice;
-//    }
-
     @Override
     public double countAreaSqm() {
         return (width / 1000) * (height / 1000);
     }
 
-//    @Override
-//    public double countPrice() {
-//        return countAreaSqm() * unitPrice;
-//    }
 
     @Override
     public void printInfo() {

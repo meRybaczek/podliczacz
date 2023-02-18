@@ -1,4 +1,3 @@
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -10,18 +9,50 @@ import java.util.Scanner;
 public class PodliczaczApp {
     Scanner scanner = new Scanner(System.in);
 
-    private List<PdfFile> pdfFileList;
+    private List<PdfFile> pdfFileList = new ArrayList<>();
 
     private SummaryStrategy summaryStrategy;
 
-    private PdfFileCalculator pdfFileCalculator;
     private ClientUnitData clientUnitData;
 
     private String filepath;
 
-    public List<PdfFile> createPdfFileList() {
+    public static void main(String[] args) {
+        PodliczaczApp podliczaczApp = new PodliczaczApp();
+        podliczaczApp.createPdfFileList();
+        podliczaczApp.mainLoop();
+    }
+
+    public void mainLoop() {
+        System.out.println("""
+                1 ---> wyswietl liste rysunkow
+                2 ---> skopiuj do excela
+                3 ---> podlicz tutaj
+                0 ---> EXIT""");
+
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1 -> {
+                printListByOption(PdfFileOption.DRAWING_BLACK);
+                printListByOption(PdfFileOption.DRAWING_COLOR);
+                mainLoop();
+            }
+            case 2, 3 -> {
+                getClientUnitData();
+                setSummaryStrategy(option);
+                summaryStrategy.createSummary();
+                mainLoop();
+            }
+            case 0 -> exit();
+            default -> {
+                System.err.println("Bledny wybor");
+                mainLoop();
+            }
+        }
+    }
+
+    public void createPdfFileList() {
         double CONVERT_TO_MM_FACTOR = 0.35277;
-        List<PdfFile> pdfFileList = new ArrayList<>();
 
         File[] files = getFileArray();
 
@@ -44,7 +75,7 @@ public class PodliczaczApp {
                 throw new RuntimeException(e);
             }
         }
-        return pdfFileList;
+
     }
 
     private File[] getFileArray() {
@@ -54,8 +85,7 @@ public class PodliczaczApp {
         File file = new File(filepath);
         if (!file.exists()) {
             System.err.println("Katalog nie istnieje.");
-        }
-        else if (file.listFiles() == null) {
+        } else if (file.listFiles() == null) {
             System.err.println("Katalog jest pusty.");
         }
         return file.listFiles();
@@ -78,7 +108,7 @@ public class PodliczaczApp {
         int quantity = scanner.nextInt();
         scanner.nextLine();
 
-        clientUnitData =  ClientUnitData.builder()
+        clientUnitData = new ClientUnitData.Builder()
                 .a4BlackUnitPrice(a4BlackUnitPrice)
                 .a4ColorUnitPrice(a4ColorUnitPrice)
                 .drawingBlackUnitPrice(drawingBlackUnitPrice)
@@ -87,5 +117,25 @@ public class PodliczaczApp {
                 .build();
     }
 
+    private void printListByOption(PdfFileOption option) {
+        System.out.printf("Lista dla %s:\n", option.name());
+
+        pdfFileList.stream()
+                .filter(x -> x.getOption() == option)
+                .forEach(PdfFile::printInfo);
+    }
+
+    private void setSummaryStrategy(int option) {
+        if (option == 2)
+            summaryStrategy = new ExternalSummaryStrategy(pdfFileList, clientUnitData, filepath);
+        if (option == 3)
+            summaryStrategy = new InternalSummaryStrategy(pdfFileList, clientUnitData, filepath);
+    }
+
+    private void exit() {
+        scanner.nextLine();
+        System.out.println("Program zakonczony");
+        System.exit(0);
+    }
 
 }
