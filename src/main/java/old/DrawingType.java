@@ -1,3 +1,5 @@
+package old;
+
 public enum DrawingType {
     CZ_B(1,"Rysunek cz-b"),
     CZ_B_EXTRA(2,"Rysunek cz-b duze zaciemnienie"),

@@ -1,4 +1,4 @@
-
+package old;
 
 public class DrawingColorPdfFile implements PdfFile {
 
@@ -10,7 +10,7 @@ public class DrawingColorPdfFile implements PdfFile {
 
     private double height;
 
-    //private double unitPrice;
+    private double unitPrice;
 
 
     public DrawingColorPdfFile(String name, double width, double height) {
@@ -34,20 +34,20 @@ public class DrawingColorPdfFile implements PdfFile {
         return option;
     }
 
-//    @Override
-//    public void setUnitPrice(double unitPrice) {
-//        this.unitPrice = unitPrice;
-//    }
+    @Override
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 
     @Override
     public double countAreaSqm() {
         return (width / 1000) * (height / 1000);
     }
 
-//    @Override
-//    public double countPrice() {
-//        return countAreaSqm() * unitPrice;
-//    }
+    @Override
+    public double countPrice() {
+        return countAreaSqm() * unitPrice;
+    }
 
     @Override
     public void printInfo() {

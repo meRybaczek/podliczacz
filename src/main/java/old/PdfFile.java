@@ -1,11 +1,12 @@
+package old;
 
 public interface PdfFile {
 
     double countAreaSqm();
-    //double countPrice();
+    double countPrice();
     void printInfo();
     PdfFileOption getOption();
-    //void setUnitPrice(double unitPrice);
+    void setUnitPrice(double unitPrice);
     double getWidth();
     double getHeight();
 

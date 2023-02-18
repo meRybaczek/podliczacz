@@ -1,5 +1,6 @@
+package old;
 
-public class DrawingBlackPdfFile implements PdfFile {
+public class DrawingBlackPdfFile implements PdfFile{
 
     PdfFileOption option = PdfFileOption.DRAWING_BLACK;
 
@@ -9,7 +10,7 @@ public class DrawingBlackPdfFile implements PdfFile {
 
     private final double height;
 
-    //private double unitPrice;
+    private double unitPrice;
 
 
     public DrawingBlackPdfFile(String name, double width, double height) {
@@ -32,20 +33,20 @@ public class DrawingBlackPdfFile implements PdfFile {
     public PdfFileOption getOption() {
         return option;
     }
-//    @Override
-//    public void setUnitPrice(double unitPrice) {
-//        this.unitPrice = unitPrice;
-//    }
+    @Override
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 
     @Override
     public double countAreaSqm() {
         return (width/1000) * (height/1000);
     }
 
-//    @Override
-//    public double countPrice() {
-//        return countAreaSqm() * unitPrice;
-//    }
+    @Override
+    public double countPrice() {
+        return countAreaSqm() * unitPrice;
+    }
 
     @Override
     public void printInfo() {

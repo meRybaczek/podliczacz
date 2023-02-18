@@ -1,3 +1,4 @@
+package old;
 
 import java.util.List;
 
@@ -17,25 +18,15 @@ public class PdfFileCalculator {
                 .map(PdfFile::countPrice)
                 .reduce(0.0, Double::sum);
     }
-
-    public Double getPriceByOption(PdfFileOption option) {
-        return list.stream()
-                .filter(x->x.getOption() == option)
-                .map(PdfFile::countPrice)
-                .reduce(0.0,Double::sum);
-    }
-
-    public long getQuantityByOption(PdfFileOption option) {
-        return list.stream()
-                .filter(x -> x.getOption() == option)
-                .count();
-    }
-
     public Double getAllDrawingsArea() {
         return list.stream()
                 .filter(x -> x.getOption() == PdfFileOption.DRAWING_BLACK || x.getOption() == PdfFileOption.DRAWING_COLOR)
                 .map(PdfFile::countAreaSqm)
                 .reduce(0.0, Double::sum);
     }
-
+    public long getQuantityByOption(PdfFileOption option) {
+        return list.stream()
+                .filter(x -> x.getOption() == option)
+                .count();
+    }
 }

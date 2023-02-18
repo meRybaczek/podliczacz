@@ -1,3 +1,4 @@
+package old;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -53,7 +54,7 @@ public class ExternalSummaryStrategy implements SummaryStrategy {
     }
 
     private void extractToExcelFile() {
-//        InputStream resourceAsStream = ExternalSummaryStrategy.class.getResourceAsStream("podliczanie.xls");
+//        InputStream resourceAsStream = old.ExternalSummaryStrategy.class.getResourceAsStream("podliczanie.xls");
 //        resourceAsStream.
 
         File xlsxFile = new File("./podliczanie.xls");
