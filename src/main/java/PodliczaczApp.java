@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class PodliczaczApp {
     Scanner scanner = new Scanner(System.in);
 
-    private List<PdfFile> pdfFileList = new ArrayList<>();
+    private final List<PdfFile> pdfFileList = new ArrayList<>();
 
     private SummaryStrategy summaryStrategy;
 
@@ -38,7 +38,7 @@ public class PodliczaczApp {
                 mainLoop();
             }
             case 2, 3 -> {
-                getClientUnitData();
+                setClientUnitData();
                 setSummaryStrategy(option);
                 summaryStrategy.createSummary();
                 mainLoop();
@@ -91,7 +91,7 @@ public class PodliczaczApp {
         return file.listFiles();
     }
 
-    public void getClientUnitData() {
+    public void setClientUnitData() {
         System.out.println("Podaj cenę za A4 cz-b :");
         double a4BlackUnitPrice = scanner.nextDouble();
         scanner.nextLine();
