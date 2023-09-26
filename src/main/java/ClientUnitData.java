@@ -1,5 +1,3 @@
-
-
 public class ClientUnitData {
     private double a4BlackUnitPrice;
     private double a4ColorUnitPrice;
@@ -27,7 +25,7 @@ public class ClientUnitData {
         return quantity;
     }
 
-        public ClientUnitData(Builder builder) {
+    private ClientUnitData(Builder builder) {
         this.a4BlackUnitPrice = builder.a4BlackUnitPrice;
         this.a4ColorUnitPrice = builder.a4ColorUnitPrice;
         this.drawingBlackUnitPrice = builder.drawingBlackUnitPrice;

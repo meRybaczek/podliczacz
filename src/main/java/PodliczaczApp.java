@@ -26,7 +26,7 @@ public class PodliczaczApp {
     public void mainLoop() {
         System.out.println("""
                 1 ---> wyswietl liste rysunkow
-                2 ---> skopiuj do excela
+                2 ---> generuj szablon excela
                 3 ---> podlicz tutaj
                 0 ---> EXIT""");
 
@@ -127,9 +127,9 @@ public class PodliczaczApp {
 
     private void setSummaryStrategy(int option) {
         if (option == 2)
-            summaryStrategy = new ExternalSummaryStrategy(pdfFileList, clientUnitData, filepath);
+            summaryStrategy = new ExternalSummaryStrategyImpl(pdfFileList, clientUnitData, filepath);
         if (option == 3)
-            summaryStrategy = new InternalSummaryStrategy(pdfFileList, clientUnitData, filepath);
+            summaryStrategy = new InternalSummaryStrategyImpl(pdfFileList, clientUnitData, filepath);
     }
 
     private void exit() {
