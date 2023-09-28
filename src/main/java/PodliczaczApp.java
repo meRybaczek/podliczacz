@@ -1,5 +1,12 @@
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import pdfFileFactory.PdfFile;
+import pdfFileFactory.PdfFileFactory;
+import pdfFileFactory.PdfFileOption;
+import summaryStrategy.ExternalSummaryStrategyImpl;
+import summaryStrategy.InternalSummaryStrategyImpl;
+import summaryStrategy.SummaryStrategy;
+import summaryStrategy.UnitPriceData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +20,7 @@ public class PodliczaczApp {
 
     private SummaryStrategy summaryStrategy;
 
-    private ClientUnitData clientUnitData;
+    private UnitPriceData unitPriceData;
 
     private String filepath;
 
@@ -23,10 +30,10 @@ public class PodliczaczApp {
         podliczaczApp.mainLoop();
     }
 
-    public void mainLoop() {
+    private void mainLoop() {
         System.out.println("""
                 1 ---> wyswietl liste rysunkow
-                2 ---> generuj szablon excela
+                2 ---> generuj do szablonu excela
                 3 ---> podlicz tutaj
                 0 ---> EXIT""");
 
@@ -51,7 +58,7 @@ public class PodliczaczApp {
         }
     }
 
-    public void createPdfFileList() {
+    private void createPdfFileList() {
         double CONVERT_TO_MM_FACTOR = 0.35277;
 
         File[] files = getFileArray();
@@ -91,7 +98,7 @@ public class PodliczaczApp {
         return file.listFiles();
     }
 
-    public void setClientUnitData() {
+    private void setClientUnitData() {
         System.out.println("Podaj cenę za A4 cz-b :");
         double a4BlackUnitPrice = scanner.nextDouble();
         scanner.nextLine();
@@ -108,7 +115,7 @@ public class PodliczaczApp {
         int quantity = scanner.nextInt();
         scanner.nextLine();
 
-        clientUnitData = new ClientUnitData.Builder()
+        unitPriceData = new UnitPriceData.Builder()
                 .a4BlackUnitPrice(a4BlackUnitPrice)
                 .a4ColorUnitPrice(a4ColorUnitPrice)
                 .drawingBlackUnitPrice(drawingBlackUnitPrice)
@@ -127,9 +134,9 @@ public class PodliczaczApp {
 
     private void setSummaryStrategy(int option) {
         if (option == 2)
-            summaryStrategy = new ExternalSummaryStrategyImpl(pdfFileList, clientUnitData, filepath);
+            summaryStrategy = new ExternalSummaryStrategyImpl(pdfFileList, unitPriceData, filepath);
         if (option == 3)
-            summaryStrategy = new InternalSummaryStrategyImpl(pdfFileList, clientUnitData, filepath);
+            summaryStrategy = new InternalSummaryStrategyImpl(pdfFileList, unitPriceData, filepath);
     }
 
     private void exit() {
